@@ -19,11 +19,29 @@ void Game::Run(Controller const &controller, Renderer &renderer,
   int frame_count = 0;
   bool running = true;
 
+  // Show menu at start
+  int i = renderer.RenderMenu("Start");
+  if (i == 1) {
+    running = false;
+  }
+
   while (running) {
     frame_start = SDL_GetTicks();
 
+    bool showmenu = false;
+
     // Input, Update, Render - the main game loop.
-    controller.HandleInput(running, snake);
+    controller.HandleInput(running, snake, showmenu);
+
+    // show menu per user's wish
+    if (showmenu) {
+      showmenu = false;
+      i = renderer.RenderMenu("Continue");
+      if (i == 1) {
+        running = false;
+      }
+    }
+
     Update();
     renderer.Render(snake, food);
 
